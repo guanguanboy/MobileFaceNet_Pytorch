@@ -42,14 +42,14 @@ _print = logging.info
 # define trainloader and testloader
 trainset = CASIA_Face(root=CASIA_DATA_DIR)
 trainloader = torch.utils.data.DataLoader(trainset, batch_size=BATCH_SIZE,
-                                          shuffle=True, num_workers=8, drop_last=False)
+                                          shuffle=True, num_workers=0, drop_last=False)
 
 # nl: left_image_path
 # nr: right_image_path
 nl, nr, folds, flags = parseList(root=LFW_DATA_DIR)
 testdataset = LFW(nl, nr)
 testloader = torch.utils.data.DataLoader(testdataset, batch_size=32,
-                                         shuffle=False, num_workers=8, drop_last=False)
+                                         shuffle=False, num_workers=0, drop_last=False)
 
 # define model
 net = model.MobileFacenet()
@@ -106,7 +106,8 @@ for epoch in range(start_epoch, TOTAL_EPOCH+1):
         batch_size = img.size(0)
         optimizer_ft.zero_grad()
 
-        raw_logits = net(img)
+        with torch.no_grad():
+            raw_logits = net(img)
 
         output = ArcMargin(raw_logits, label)
         total_loss = criterion(output, label)
@@ -145,9 +146,9 @@ for epoch in range(start_epoch, TOTAL_EPOCH+1):
 
         result = {'fl': featureLs, 'fr': featureRs, 'fold': folds, 'flag': flags}
         # save tmp_result
-        scipy.io.savemat('./result/tmp_result.mat', result)
-        accs = evaluation_10_fold('./result/tmp_result.mat')
-        _print('    ave: {:.4f}'.format(np.mean(accs) * 100))
+        #scipy.io.savemat('./result/tmp_result.mat', result)
+        #accs = evaluation_10_fold('./result/tmp_result.mat')
+        #_print('    ave: {:.4f}'.format(np.mean(accs) * 100))
 
     # save model
     if epoch % SAVE_FREQ == 0:

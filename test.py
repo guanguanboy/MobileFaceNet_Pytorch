@@ -15,3 +15,7 @@ print(type(img))
 
 cwd=os.getcwd()
 print(cwd)
+
+import scipy.io
+
+scipy.io.savemat('./result/tmp_result.mat', result)
