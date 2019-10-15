@@ -2,6 +2,8 @@ import numpy as np
 import scipy.misc
 import os
 import torch
+from torch.utils import data
+import matplotlib.image as mp
 
 class CASIA_Face(object):
     def __init__(self, root):
@@ -24,7 +26,7 @@ class CASIA_Face(object):
     def __getitem__(self, index):
         img_path = self.image_list[index]
         target = self.label_list[index]
-        img = scipy.misc.imread(img_path) #read a image from a file as an array将图片读取出来为array类型，即numpy类型
+        img = mp.imread(img_path) #read a image from a file as an array将图片读取出来为array类型，即numpy类型
 
         if len(img.shape) == 2:
             img = np.stack([img] * 3, 2)
@@ -42,9 +44,10 @@ class CASIA_Face(object):
 
 
 if __name__ == '__main__':
-    data_dir = 'E:\\CodeFromGitHub\\MobileFaceNet_Pytorch\\testdata\\CASIA_Test'
+    #data_dir = 'E:\\CodeFromGitHub\\MobileFaceNet_Pytorch\\testdata\\CASIA_Test'
+    data_dir = '..\\testdata\\CASIA_Test'
     dataset = CASIA_Face(root=data_dir)
-    #trainloader = torch.utils.data.DataLoader(dataset, batch_size=32, shuffle=True, num_workers=8, drop_last=False)
+    trainloader = torch.utils.data.DataLoader(dataset, batch_size=32, shuffle=True, num_workers=8, drop_last=False)
     print(len(dataset))
-    #for data in trainloader:
-        #print(data[0].shape)
+    for data in trainloader:
+        print(data[0].shape)
