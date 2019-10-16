@@ -18,4 +18,5 @@ print(cwd)
 
 import scipy.io
 
+result = {"abc":10}
 scipy.io.savemat('./result/tmp_result.mat', result)

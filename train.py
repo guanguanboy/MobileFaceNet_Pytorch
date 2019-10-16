@@ -72,6 +72,7 @@ for m in net.modules():
         prelu_params += m.parameters()
 base_params = filter(lambda p: id(p) not in ignored_params, net.parameters())
 
+#创建一个优化器
 optimizer_ft = optim.SGD([
     {'params': base_params, 'weight_decay': 4e-5},
     {'params': net.linear1.parameters(), 'weight_decay': 4e-4},
@@ -111,8 +112,8 @@ for epoch in range(start_epoch, TOTAL_EPOCH+1):
 
         output = ArcMargin(raw_logits, label)
         total_loss = criterion(output, label)
-        total_loss.backward()
-        optimizer_ft.step()
+        total_loss.backward() #反向传播
+        optimizer_ft.step()  #更新权重
 
         train_total_loss += total_loss.item() * batch_size
         total += batch_size
